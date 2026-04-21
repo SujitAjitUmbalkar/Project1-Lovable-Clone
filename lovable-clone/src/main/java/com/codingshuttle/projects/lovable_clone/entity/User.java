@@ -22,5 +22,5 @@ public class User
     Instant createdAt;
     Instant updatedAt;
 
-    Instant deletedAt; //soft delete
+    Instant deletedAt;  //soft delete
 }
