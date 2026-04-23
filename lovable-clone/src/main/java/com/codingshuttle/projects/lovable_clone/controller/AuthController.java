@@ -22,4 +22,13 @@ public class AuthController
         return ResponseEntity.ok(authService.signup(request));
     }
 
+    /*
+    1. signup : (/api/auth/signup) , PostMapping
+        created Service , AuthService interface
+        created SignupRequest DTO to fetch data from user ,
+        return AuthResponse , this returns token and UserProfileResponse
+        UserProfileResponse contains info about user
+     */
+
+
 }
