@@ -1,5 +1,6 @@
 package com.codingshuttle.projects.lovable_clone.controller;
 
+import com.codingshuttle.projects.lovable_clone.dto.project.FileContentResponse;
 import com.codingshuttle.projects.lovable_clone.dto.project.FileNode;
 import com.codingshuttle.projects.lovable_clone.service.FileService;
 import lombok.RequiredArgsConstructor;
@@ -23,5 +24,12 @@ public class FileController
     {
         Long userId = 1L;
         return ResponseEntity.ok(fileService.getFileTree(userId, projectId));
+    }
+
+    @GetMapping("/{*path}")     // all contents after / ( /api/projects/10/files/ ->  src/main/App.java
+    public ResponseEntity<FileContentResponse> getFile(@PathVariable Long projectId , @PathVariable String path)
+    {
+        Long userId = 1L;
+        return ResponseEntity.ok(fileService.getFileContent(path, projectId, userId));
     }
 }
