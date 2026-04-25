@@ -1,5 +1,6 @@
 package com.codingshuttle.projects.lovable_clone.controller;
 
+import com.codingshuttle.projects.lovable_clone.dto.subscription.PlanLimitResponse;
 import com.codingshuttle.projects.lovable_clone.dto.subscription.UsageTodayResponse;
 import com.codingshuttle.projects.lovable_clone.service.UsageService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,13 @@ public class UsageController
             Long userId = 1L;
             return ResponseEntity.ok(usageService.getTodayUsageOfUser(userId));
         }
+
+    @GetMapping("/limits")
+    public ResponseEntity<PlanLimitResponse> getPlanLimits()
+    {
+        Long userId = 1L;
+        return ResponseEntity.ok(usageService.getCurrentSubscriptionLimits(userId));
+    }
 
 
 }
