@@ -2,6 +2,7 @@ package com.codingshuttle.projects.lovable_clone.controller;
 
 import com.codingshuttle.projects.lovable_clone.dto.member.InviteMemberRequest;
 import com.codingshuttle.projects.lovable_clone.dto.member.MemberResponse;
+import com.codingshuttle.projects.lovable_clone.dto.member.UpdateMemberRoleRequest;
 import com.codingshuttle.projects.lovable_clone.entity.ProjectMember;
 import com.codingshuttle.projects.lovable_clone.service.ProjectMemberService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class ProjectMemberController
     private final ProjectMemberService projectMemberService;
 
     @GetMapping
-    public ResponseEntity<List<MemberResponse>> getProjectMembers(@PathVariable long projectId)
+    public ResponseEntity<List<MemberResponse>> getProjectMembers(@PathVariable Long projectId)
     {
         Long userId = 1L;
         return ResponseEntity.ok(projectMemberService.getProjectMembers(projectId , userId));
@@ -29,7 +30,7 @@ public class ProjectMemberController
     @PostMapping
     public ResponseEntity<MemberResponse> inviteMember
             (
-                    @PathVariable long projectId ,
+                    @PathVariable Long projectId ,
                     @RequestBody InviteMemberRequest request
             )
     {
@@ -37,4 +38,17 @@ public class ProjectMemberController
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(projectMemberService.inviteMember(projectId , request , userId));
     }
+
+    @PatchMapping("{/memberId}")
+    public ResponseEntity<MemberResponse> updateMemberRole
+            (
+                    @PathVariable Long projectId,
+                    @PathVariable Long memberId,
+                    @RequestBody UpdateMemberRoleRequest request
+            )
+    {
+        Long userId = 1L;
+        return ResponseEntity.ok(projectMemberService.updateMemberRole(projectId , memberId , request , userId));
+    }
+
 }
