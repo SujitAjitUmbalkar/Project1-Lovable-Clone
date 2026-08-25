@@ -2,13 +2,13 @@ package com.codingshuttle.projects.lovable_clone.service;
 
 import com.codingshuttle.projects.lovable_clone.dto.project.ProjectRequest;
 import com.codingshuttle.projects.lovable_clone.dto.project.ProjectResponse;
-import com.codingshuttle.projects.lovable_clone.dto.project.ProjectSummuryResponse;
+import com.codingshuttle.projects.lovable_clone.dto.project.ProjectSummaryResponse;
 
 import java.util.List;
 
 public interface ProjectService
 {
-    List<ProjectSummuryResponse> getUserProjects(Long userId);
+    List<ProjectSummaryResponse> getUserProjects(Long userId);
 
     ProjectResponse getProjectById(Long id, Long userId);
 

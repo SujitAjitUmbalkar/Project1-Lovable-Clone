@@ -2,13 +2,12 @@ package com.codingshuttle.projects.lovable_clone.service.Impl;
 
 import com.codingshuttle.projects.lovable_clone.dto.project.ProjectRequest;
 import com.codingshuttle.projects.lovable_clone.dto.project.ProjectResponse;
-import com.codingshuttle.projects.lovable_clone.dto.project.ProjectSummuryResponse;
+import com.codingshuttle.projects.lovable_clone.dto.project.ProjectSummaryResponse;
 import com.codingshuttle.projects.lovable_clone.entity.Project;
 import com.codingshuttle.projects.lovable_clone.entity.User;
 import com.codingshuttle.projects.lovable_clone.mapper.ProjectMapper;
 import com.codingshuttle.projects.lovable_clone.repository.ProjectRepository;
 import com.codingshuttle.projects.lovable_clone.repository.UserRepository;
-import com.codingshuttle.projects.lovable_clone.service.FileService;
 import com.codingshuttle.projects.lovable_clone.service.ProjectService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -17,6 +16,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,8 +34,9 @@ public class ProjectServiceImpl implements ProjectService
         User owner = userRepository.findById(userId).orElseThrow();
 
         Project project = Project.builder()
-                .name(owner.getName())
+                .name(request.name())
                 .owner(owner)
+                .isPublic(false)
                 .build();
 
          project = projectRepository.save(project);
@@ -45,9 +46,17 @@ public class ProjectServiceImpl implements ProjectService
     }
 
     @Override
-    public List<ProjectSummuryResponse> getUserProjects(Long userId)
+    public List<ProjectSummaryResponse> getUserProjects(Long userId)
     {
-        return List.of();
+//        return projectRepository.getAllProjectsAccessibleByUser(userId)
+//                .stream()
+//                .map(project -> projectMapper.toProjectSummaryResponse(project))
+//                .collect(Collectors.toList());
+
+//        OR YOU CAN USE MAPSTRUCT DIRECTLY
+
+        return
+                projectMapper.toListOfProjectSummaryResponse(projectRepository.getAllProjectsAccessibleByUser(userId));
     }
 
     @Override

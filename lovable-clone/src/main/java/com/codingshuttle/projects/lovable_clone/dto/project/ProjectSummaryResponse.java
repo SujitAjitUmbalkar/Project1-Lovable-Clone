@@ -4,14 +4,12 @@ import com.codingshuttle.projects.lovable_clone.dto.auth.UserProfileResponse;
 
 import java.time.Instant;
 
-public record ProjectResponse
+public record ProjectSummaryResponse
         (
                 Long id ,
-                String name ,
+                String name,
                 Instant createdAt,
-                Instant updatedAt,
-                Boolean isPublic,
-                UserProfileResponse owner     // so user can see his profile info also (who is owner)
+                Instant updatedAt
         )
 {
 }

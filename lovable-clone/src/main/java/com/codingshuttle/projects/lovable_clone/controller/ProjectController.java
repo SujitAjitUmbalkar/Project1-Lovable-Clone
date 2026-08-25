@@ -2,7 +2,7 @@ package com.codingshuttle.projects.lovable_clone.controller;
 
 import com.codingshuttle.projects.lovable_clone.dto.project.ProjectRequest;
 import com.codingshuttle.projects.lovable_clone.dto.project.ProjectResponse;
-import com.codingshuttle.projects.lovable_clone.dto.project.ProjectSummuryResponse;
+import com.codingshuttle.projects.lovable_clone.dto.project.ProjectSummaryResponse;
 import com.codingshuttle.projects.lovable_clone.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ public class ProjectController
     private final ProjectService projectService;
 
     @GetMapping
-    public ResponseEntity<List<ProjectSummuryResponse>> getUserProjects()
+    public ResponseEntity<List<ProjectSummaryResponse>> getUserProjects()
     {
         Long  userId = 1L;          // will use in spring security
         return  ResponseEntity.ok(projectService.getUserProjects(userId));
