@@ -4,7 +4,7 @@ spring:
     description: this is application
 
   datasource:
-    url: jdbc:postgresql://localhost:9800/postgreDB_lovable
+    url: jdbc:postgresql://localhost:5432/PostgreDB-lovable
     username: postgres
     password: Sujit@123
     driver-class-name: org.postgresql.Driver
