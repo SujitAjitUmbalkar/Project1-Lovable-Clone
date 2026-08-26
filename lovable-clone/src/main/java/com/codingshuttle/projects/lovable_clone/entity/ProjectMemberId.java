@@ -1,12 +1,18 @@
 package com.codingshuttle.projects.lovable_clone.entity;
 
-/*
-ProjectMemberId is a composite key combining projectId and userId to uniquely identify a membership
- and prevent duplicate user-project associations
- */
+import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Embeddable
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProjectMemberId
 {
-    Long projectId; // Part of PK: Identifies which project this membership belongs to
-    Long userId;    // Part of PK: Identifies which user is being granted access
+    Long projectId;
+    Long userId;
 }
