@@ -5,8 +5,10 @@ import com.codingshuttle.projects.lovable_clone.entity.ProjectMemberId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ProjectMemberRepository extends JpaRepository<ProjectMember, ProjectMemberId>
 {
-
+    List<ProjectMember> findByIdProjectId(long projectId);      // though our id is composite key , so go deep in it id->projectId
 }
