@@ -139,8 +139,27 @@ public class ProjectMemberServiceImpl implements ProjectMemberService
     }
 
     @Override
-    public MemberResponse deleteMember(Long projectId, Long memberId, Long userId) {
-        return null;
+    public void removeProjectMember(Long projectId, Long memberId, Long userId)
+    {
+//        1. get the project
+        Project project = getAccessibleProjectById(userId , projectId);
+
+//        2. check permission
+        if(!project.getOwner().getId().equals(userId))
+        {
+            throw new RuntimeException("Not Allowed, You are not an owner ");
+        }
+
+//        3. create projectMemberId and check if the member of the project exists
+        ProjectMemberId projectMemberId = new  ProjectMemberId(projectId, memberId);
+        if(!projectMemberRepository.existsById(projectMemberId))
+        {
+            throw new RuntimeException("There is no such member with id " + memberId);
+        }
+
+//       4. delete the member
+        projectMemberRepository.deleteById(projectMemberId);
+
     }
 
     ///  INTERNAL WORKING FUNCTIONS
