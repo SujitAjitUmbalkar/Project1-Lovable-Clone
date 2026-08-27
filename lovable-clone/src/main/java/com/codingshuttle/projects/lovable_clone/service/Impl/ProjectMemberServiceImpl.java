@@ -5,16 +5,19 @@ import com.codingshuttle.projects.lovable_clone.dto.member.MemberResponse;
 import com.codingshuttle.projects.lovable_clone.dto.member.UpdateMemberRoleRequest;
 import com.codingshuttle.projects.lovable_clone.entity.Project;
 import com.codingshuttle.projects.lovable_clone.entity.ProjectMember;
+import com.codingshuttle.projects.lovable_clone.entity.ProjectMemberId;
 import com.codingshuttle.projects.lovable_clone.entity.User;
 import com.codingshuttle.projects.lovable_clone.mapper.ProjectMemberMapper;
 import com.codingshuttle.projects.lovable_clone.repository.ProjectMemberRepository;
 import com.codingshuttle.projects.lovable_clone.repository.ProjectRepository;
+import com.codingshuttle.projects.lovable_clone.repository.UserRepository;
 import com.codingshuttle.projects.lovable_clone.service.ProjectMemberService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +30,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService
     ProjectMemberRepository projectMemberRepository;
     ProjectRepository projectRepository;
     ProjectMemberMapper projectMemberMapper;
+    UserRepository userRepository;
 
     @Override
     public List<MemberResponse> getProjectMembers(long projectId, Long userId)
@@ -63,8 +67,48 @@ public class ProjectMemberServiceImpl implements ProjectMemberService
     }
 
     @Override
-    public MemberResponse inviteMember(long projectId, InviteMemberRequest request, Long userId) {
-        return null;
+    public MemberResponse inviteMember(long projectId, InviteMemberRequest request, Long userId)
+    {
+//        1. get the project
+        Project project = getAccessibleProjectById(userId , projectId);
+
+//        2. check permission
+        if(!project.getOwner().getId().equals(userId))
+        {
+            throw new RuntimeException("Not Allowed, You are not an owner ");
+        }
+
+//        3. fetch the invitee from the user Repository
+        User invitee = userRepository.findByEmail(request.email())
+                .orElseThrow(() -> new RuntimeException("There is no User with email " + request.email()));
+
+//        4. check if the inviter is not inviting himself
+        if(invitee.getId().equals(userId))
+        {
+            throw new RuntimeException("Cannot invite yourself");
+        }
+
+//        5. check if the invitee is not invited before
+        ProjectMemberId projectMemberId = new  ProjectMemberId(projectId, invitee.getId());
+        if(projectMemberRepository.existsById(projectMemberId))
+        {
+            throw new RuntimeException("Cannot invite again");
+        }
+
+//        create project member by provided info
+        ProjectMember member = ProjectMember.builder()
+                .id(projectMemberId)
+                .project(project)
+                .user(invitee)
+                .projectRole(request.role())
+                .invitedAt(Instant.now())
+                .build();
+
+//        save member
+        projectMemberRepository.save(member);
+
+//        return after converting ProjectMember -> MemberResponse
+        return projectMemberMapper.toMemberResponseFromMember(member);
     }
 
     @Override
