@@ -12,6 +12,7 @@ import com.codingshuttle.projects.lovable_clone.repository.ProjectMemberReposito
 import com.codingshuttle.projects.lovable_clone.repository.ProjectRepository;
 import com.codingshuttle.projects.lovable_clone.repository.UserRepository;
 import com.codingshuttle.projects.lovable_clone.service.ProjectMemberService;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
+@Transactional
 public class ProjectMemberServiceImpl implements ProjectMemberService
 {
     ProjectMemberRepository projectMemberRepository;
@@ -112,8 +114,28 @@ public class ProjectMemberServiceImpl implements ProjectMemberService
     }
 
     @Override
-    public MemberResponse updateMemberRole(Long projectId, Long memberId, UpdateMemberRoleRequest request, Long userId) {
-        return null;
+    public MemberResponse updateMemberRole(Long projectId, Long memberId, UpdateMemberRoleRequest request, Long userId)
+    {
+        //        1. get the project
+        Project project = getAccessibleProjectById(userId , projectId);
+
+//        2. check permission
+        if(!project.getOwner().getId().equals(userId))
+        {
+            throw new RuntimeException("Not Allowed, You are not an owner ");
+        }
+
+//        3. create projectMemberId and find the Member of Project via projectMemberId
+        ProjectMemberId projectMemberId = new  ProjectMemberId(projectId, memberId);
+        ProjectMember member = projectMemberRepository.findById(projectMemberId)
+                .orElseThrow(() -> new RuntimeException("Member Not Found"));
+
+//        4. set role as requested and save
+        member.setProjectRole(request.role());
+        projectMemberRepository.save(member);
+
+//        5. convert ProjectMember to MemberResponse and return
+        return projectMemberMapper.toMemberResponseFromMember(member);
     }
 
     @Override
