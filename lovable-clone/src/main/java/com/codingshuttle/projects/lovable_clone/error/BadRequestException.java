@@ -8,5 +8,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE,  makeFinal = true)
 public class BadRequestException extends RuntimeException
 {
-    String message;
+    public BadRequestException(String message) {
+        super(message); // This populates the built-in RuntimeException message field
+    }
 }
