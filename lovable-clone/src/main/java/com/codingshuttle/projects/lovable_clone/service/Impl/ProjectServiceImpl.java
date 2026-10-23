@@ -5,6 +5,7 @@ import com.codingshuttle.projects.lovable_clone.dto.project.ProjectResponse;
 import com.codingshuttle.projects.lovable_clone.dto.project.ProjectSummaryResponse;
 import com.codingshuttle.projects.lovable_clone.entity.Project;
 import com.codingshuttle.projects.lovable_clone.entity.User;
+import com.codingshuttle.projects.lovable_clone.error.ResourceNotFoundException;
 import com.codingshuttle.projects.lovable_clone.mapper.ProjectMapper;
 import com.codingshuttle.projects.lovable_clone.repository.ProjectRepository;
 import com.codingshuttle.projects.lovable_clone.repository.UserRepository;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.ReadOnlyFileSystemException;
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -97,7 +99,7 @@ public class ProjectServiceImpl implements ProjectService
     public Project getAccessibleProjectById(Long userId, Long projectId)
     {
         return projectRepository.findAccessibleProjectById(userId, projectId)
-                .orElseThrow(() -> new RuntimeException("there is no project with this id "+projectId));
+                .orElseThrow(() -> new ResourceNotFoundException("project", projectId.toString()));
     }
 
 }
