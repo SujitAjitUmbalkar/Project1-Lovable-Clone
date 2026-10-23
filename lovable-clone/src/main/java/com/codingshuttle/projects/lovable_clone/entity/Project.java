@@ -32,10 +32,6 @@ public class Project
     @Column(length = 100,  nullable = false)
     String name;
 
-    @ManyToOne
-    @JoinColumn(nullable = false, name = "owner_id")
-    User owner;
-
     Boolean isPublic = false;
 
     @CreationTimestamp

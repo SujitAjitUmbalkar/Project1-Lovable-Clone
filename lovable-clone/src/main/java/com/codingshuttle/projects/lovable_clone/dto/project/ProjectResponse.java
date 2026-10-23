@@ -10,8 +10,8 @@ public record ProjectResponse
                 String name ,
                 Instant createdAt,
                 Instant updatedAt,
-                Boolean isPublic,
-                UserProfileResponse owner     // so user can see his profile info also (who is owner)
+                Boolean isPublic
+//                UserProfileResponse owner     // so user can see his profile info also (who is owner)
         )
 {
 }
