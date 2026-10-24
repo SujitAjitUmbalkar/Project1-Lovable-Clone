@@ -19,33 +19,36 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter
 {
     private final AuthUtils authUtils;
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException
     {
         log.info("Incoming request {}", request.getRequestURI());
 
-        final String requestsHeaderToken = request.getHeader("Authorization");
+        final String requestHeaderToken = request.getHeader("Authorization");
 
-        if (requestsHeaderToken == null || !requestsHeaderToken.startsWith("Bearer "))
+        if (requestHeaderToken == null || !requestHeaderToken.startsWith("Bearer "))
         {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = requestsHeaderToken.replace("Bearer ", "");
+        String token = requestHeaderToken.replace("Bearer ", "");
 
-        JwtUserPrinciple user = authUtils.verifyAccessToken(token);
+        try {
+            JwtUserPrinciple user = authUtils.verifyAccessToken(token);
 
-        if (user != null && SecurityContextHolder.getContext().getAuthentication() == null)
-        {
-            UsernamePasswordAuthenticationToken authenticationToken = new  UsernamePasswordAuthenticationToken(
-                    user,null, user.authorities());
+            if (user != null && SecurityContextHolder.getContext().getAuthentication() == null)
+            {
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                        user, null, user.authorities());
 
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            }
+        } catch (Exception e) {
+            log.error("Cannot set user authentication: {}", e.getMessage());
+            // Optional: You can choose to clear context or let it pass down unauthenticated
         }
 
         filterChain.doFilter(request, response);
-
     }
 }

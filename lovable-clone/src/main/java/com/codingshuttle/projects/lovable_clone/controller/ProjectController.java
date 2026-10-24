@@ -22,37 +22,31 @@ public class ProjectController
     @GetMapping
     public ResponseEntity<List<ProjectSummaryResponse>> getUserProjects()
     {
-        Long  userId = 1L;          // will use in spring security
-        return  ResponseEntity.ok(projectService.getUserProjects(userId));
+        return  ResponseEntity.ok(projectService.getUserProjects());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProjectResponse> getProjectById(@PathVariable Long id)
     {
-        Long userId = 1L;
-        return ResponseEntity.ok(projectService.getUserProjectById(id , userId));
+        return ResponseEntity.ok(projectService.getUserProjectById(id ));
     }
 
     @PostMapping
     public ResponseEntity<ProjectResponse> createProject(@RequestBody @Valid ProjectRequest request)
     {
-        Long userId = 1L;
-        return ResponseEntity.status(HttpStatus.CREATED).body(projectService.createProject(userId, request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(projectService.createProject( request));
     }
 
     @PatchMapping("/{id}")
     public  ResponseEntity<ProjectResponse> updateProject(@PathVariable Long id, @RequestBody @Valid ProjectRequest request)
     {
-        Long userId = 1L;
-        return ResponseEntity.ok(projectService.updateProject(id , request , userId));
+        return ResponseEntity.ok(projectService.updateProject(id , request ));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ProjectResponse> deleteProjectById(@PathVariable Long id)
+    public ResponseEntity<Void> deleteProjectById(@PathVariable Long id)
     {
-        Long userId = 1L;
-        projectService.softDelete(id, userId);
+        projectService.softDelete(id);
         return ResponseEntity.noContent().build();
     }
-
 }
