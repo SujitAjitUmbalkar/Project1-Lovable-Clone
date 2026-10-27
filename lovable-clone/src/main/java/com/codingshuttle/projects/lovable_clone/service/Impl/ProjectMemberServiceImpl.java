@@ -42,7 +42,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService
 
         Project project = getAccessibleProjectById(userId , projectId );     // not needed in method but for security purpose
 
-        return projectMemberRepository.findByIdProjectId(projectId)
+        return projectMemberRepository.findById_ProjectId(projectId)
                 .stream()
                 .map(projectMember -> projectMemberMapper.toMemberResponseFromMember(projectMember))
                 .collect(Collectors.toList());

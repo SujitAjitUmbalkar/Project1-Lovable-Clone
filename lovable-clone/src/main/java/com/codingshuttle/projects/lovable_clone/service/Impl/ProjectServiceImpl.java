@@ -19,6 +19,7 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.ReadOnlyFileSystemException;
@@ -81,11 +82,12 @@ public class ProjectServiceImpl implements ProjectService
     }
 
     @Override
-    public ProjectResponse getUserProjectById(Long id)
+    @PreAuthorize("@security.canViewProject(#projectId)")
+    public ProjectResponse getUserProjectById(Long projectId)
     {
         Long userId = authUtils.getCurrentUserId();
 
-        Project project = getAccessibleProjectById(userId, id);
+        Project project = getAccessibleProjectById(userId, projectId);
 
         return projectMapper.toProjectResponse(project);
     }

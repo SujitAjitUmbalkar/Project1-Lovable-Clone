@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 @Repository
-public interface ProjectRepository extends JpaRepository<Project, Long> // Note: use Long if your ID is Long, or keep Integer if matching your entity
+public interface ProjectRepository extends JpaRepository<Project, Long>
 {
 
     @Query("""
@@ -17,7 +17,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> // Note:
                 WHERE p.deletedAt IS NULL
                 AND EXISTS (
                     SELECT 1 FROM ProjectMember pm
-                    WHERE pm.id.userId = : userId
+                    WHERE pm.id.userId = :userId
                     AND  pm.id.projectId = p.id
                     )
                     ORDER BY p.updatedAt DESC
@@ -34,7 +34,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> // Note:
                         AND pm.id.projectId = p.id
                         )
             """)
-            Optional<Project> findAccessibleProjectById(
+    Optional<Project> findAccessibleProjectById(
             @Param("userId") Long userId,
             @Param("projectId") Long projectId
     );
