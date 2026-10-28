@@ -93,10 +93,11 @@ public class ProjectServiceImpl implements ProjectService
     }
 
     @Override
-    public ProjectResponse updateProject(Long id, ProjectRequest request)
+    @PreAuthorize("@security.canEditProject(#projectId)")
+    public ProjectResponse updateProject(Long projectId, ProjectRequest request)
     {
         Long userId = authUtils.getCurrentUserId();
-        Project project = getAccessibleProjectById(userId, id);
+        Project project = getAccessibleProjectById(userId, projectId);
 
         project.setName(request.name());
 
@@ -105,11 +106,13 @@ public class ProjectServiceImpl implements ProjectService
     }
 
     @Override
-    public void softDelete(Long id)
+    //    @PreAuthorize("@security.hasPermission(#projectId, T(com.codingshuttle.projects.lovable_clone.enums.ProjectPermission('project:delete')))")
+    @PreAuthorize("security.canDeleteProject(#projectId)")
+    public void softDelete(Long projectId)
     {
         Long userId = authUtils.getCurrentUserId();
 
-        Project project = getAccessibleProjectById(userId, id);
+        Project project = getAccessibleProjectById(userId, projectId);
 
         project.setDeletedAt(Instant.now());
         projectRepository.save(project);

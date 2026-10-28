@@ -5,13 +5,15 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
+import static com.codingshuttle.projects.lovable_clone.enums.ProjectPermission.*;
+
 @RequiredArgsConstructor
 @Getter
 public enum ProjectRole
 {
-    EDITOR(Set.of(ProjectPermission.EDIT, ProjectPermission.DELETE, ProjectPermission.VIEW)),
-    VIEWER(Set.of(ProjectPermission.VIEW)),
-    OWNER(Set.of(ProjectPermission.VIEW, ProjectPermission.EDIT, ProjectPermission.DELETE));
+    EDITOR(Set.of(EDIT, DELETE, VIEW, VIEW_MEMBERS)),
+    VIEWER(Set.of(VIEW, VIEW_MEMBERS)),
+    OWNER(Set.of(VIEW, EDIT, DELETE, VIEW_MEMBERS,MANAGE_MEMBERS)),;
 
     private final Set<ProjectPermission> permissions;
 }
