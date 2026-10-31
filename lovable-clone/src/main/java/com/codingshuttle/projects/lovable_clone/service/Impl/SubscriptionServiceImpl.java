@@ -8,19 +8,12 @@ import com.codingshuttle.projects.lovable_clone.service.SubscriptionService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SubscriptionServiceImpl implements SubscriptionService {
+public class SubscriptionServiceImpl implements SubscriptionService
+{
+
     @Override
-    public SubscriptionResponse getCurrentSubscription(Long userId) {
+    public SubscriptionResponse getCurrentSubscription() {
         return null;
     }
 
-    @Override
-    public CheckoutResponse createCheckoutSessionUrl(Long userId, CheckoutRequest request) {
-        return null;
-    }
-
-    @Override
-    public PortalResponse openCustomerPortal(Long userId) {
-        return null;
-    }
 }

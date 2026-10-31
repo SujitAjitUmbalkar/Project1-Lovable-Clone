@@ -8,9 +8,6 @@ import com.codingshuttle.projects.lovable_clone.dto.subscription.SubscriptionRes
 public interface SubscriptionService
 {
 
-    SubscriptionResponse getCurrentSubscription(Long userId);
+    SubscriptionResponse getCurrentSubscription();
 
-    CheckoutResponse createCheckoutSessionUrl(Long userId, CheckoutRequest request);
-
-    PortalResponse openCustomerPortal(Long userId);
 }

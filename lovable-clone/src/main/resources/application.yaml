@@ -18,6 +18,11 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
+  config:
+    import: optional:classpath:application-secret.properties
 
 jwt:
   secret-key: fjfdkjfdajfk;ueif;ojfncdjdjfjfkjjdka;fjka;fj;afj;fj
+
+client:
+  url: http://localhost:8080

@@ -1,6 +1,7 @@
 package com.codingshuttle.projects.lovable_clone.controller;
 
 import com.codingshuttle.projects.lovable_clone.dto.subscription.*;
+import com.codingshuttle.projects.lovable_clone.service.PaymentProcessor;
 import com.codingshuttle.projects.lovable_clone.service.PlanService;
 import com.codingshuttle.projects.lovable_clone.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.List;
 public class BillingController
 {
     private final PlanService planService;
+    private final PaymentProcessor paymentProcessor;
     private final SubscriptionService subscriptionService;
 
     @GetMapping("/api/plans")
@@ -27,27 +29,21 @@ public class BillingController
     }
 
     @GetMapping("/api/me/subscription")
-    public ResponseEntity<SubscriptionResponse> getMySubsciption()
+    public ResponseEntity<SubscriptionResponse> getMySubscription()
     {
-        Long userId = 1L;
-        return ResponseEntity.ok(subscriptionService.getCurrentSubscription(userId));
+        return ResponseEntity.ok(subscriptionService.getCurrentSubscription());
     }
 
-    @PostMapping("/api/stripe/checkout")
-    public ResponseEntity<CheckoutResponse> createCheckoutSessionUrl
-            (
-                    @RequestBody CheckoutRequest request
-            )
+    @PostMapping("/api/payment/checkout")
+    public ResponseEntity<CheckoutResponse> createCheckoutSessionUrl(@RequestBody CheckoutRequest request)
     {
-        Long userId = 1L;
-        return ResponseEntity.ok(subscriptionService.createCheckoutSessionUrl(userId , request));
+        return ResponseEntity.ok(paymentProcessor.createCheckoutSessionUrl( request));
     }
 
-    @PostMapping("/api/stripe/portal")
+    @PostMapping("/api/payment/portal")
     public ResponseEntity<PortalResponse> openCustomerPortal()
     {
-        Long userId = 1L;
-        return ResponseEntity.ok(subscriptionService.openCustomerPortal(userId));
+        return ResponseEntity.ok(paymentProcessor.openCustomerPortal());
     }
 
 //    It handles a POST request to /api/stripe/portal

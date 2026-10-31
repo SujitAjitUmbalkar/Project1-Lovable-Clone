@@ -114,6 +114,12 @@
             <scope>runtime</scope>
         </dependency>
 
+<!--        Stripe Payment-->
+        <dependency>
+            <groupId>com.stripe</groupId>
+            <artifactId>stripe-java</artifactId>
+            <version>34.0.0</version>
+        </dependency>
 
     </dependencies>
 
