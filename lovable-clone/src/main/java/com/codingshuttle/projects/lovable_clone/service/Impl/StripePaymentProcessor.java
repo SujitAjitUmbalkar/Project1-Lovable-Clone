@@ -4,8 +4,10 @@ import com.codingshuttle.projects.lovable_clone.dto.subscription.CheckoutRequest
 import com.codingshuttle.projects.lovable_clone.dto.subscription.CheckoutResponse;
 import com.codingshuttle.projects.lovable_clone.dto.subscription.PortalResponse;
 import com.codingshuttle.projects.lovable_clone.entity.Plan;
+import com.codingshuttle.projects.lovable_clone.entity.User;
 import com.codingshuttle.projects.lovable_clone.error.ResourceNotFoundException;
 import com.codingshuttle.projects.lovable_clone.repository.PlanRepository;
+import com.codingshuttle.projects.lovable_clone.repository.UserRepository;
 import com.codingshuttle.projects.lovable_clone.security.AuthUtils;
 import com.codingshuttle.projects.lovable_clone.service.PaymentProcessor;
 import com.stripe.exception.StripeException;
@@ -27,6 +29,7 @@ public class StripePaymentProcessor implements PaymentProcessor
 {
     private final AuthUtils authUtil;
     private final PlanRepository planRepository;
+    private final UserRepository userRepository;
 
     @NonFinal
     @Value("${client.url}")
@@ -36,11 +39,13 @@ public class StripePaymentProcessor implements PaymentProcessor
     public CheckoutResponse createCheckoutSessionUrl(CheckoutRequest request)
     {
         Long userId = authUtil.getCurrentUserId();
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new ResourceNotFoundException("user",userId.toString()));
 
         Plan plan = planRepository.findById(request.planId()).orElseThrow(() ->
                 new ResourceNotFoundException("Plan", request.planId().toString()));
 
-        SessionCreateParams params = SessionCreateParams.builder()
+        var params = SessionCreateParams.builder()
                 .addLineItem(
                         SessionCreateParams.LineItem.builder().setPrice(plan.getStripePriceId()).setQuantity(1L).build()
                 )
@@ -55,12 +60,22 @@ public class StripePaymentProcessor implements PaymentProcessor
                 .setSuccessUrl(frontEntUrl + "/success.html?session_id={CHECKOUT_SESSION_ID}")
                 .setCancelUrl(frontEntUrl + "/cancel.html")
                 .putMetadata("user_id", userId.toString())
-                .putMetadata("plan_id", plan.getId().toString())
-                .build();
+                .putMetadata("plan_id", plan.getId().toString());
 
         try
         {
-            Session session = Session.create(params);
+            String stipeCustomerId = user.getStripeCustomerId();
+            if(stipeCustomerId == null || stipeCustomerId.isEmpty())
+            {
+                params.setCustomerEmail(user.getUsername());
+            }
+            else
+            {
+                params.setCustomer(stipeCustomerId);
+
+            }
+
+            Session session = Session.create(params.build());
 
             log.info("Stripe Session URL generated: {}", session.getUrl());
 

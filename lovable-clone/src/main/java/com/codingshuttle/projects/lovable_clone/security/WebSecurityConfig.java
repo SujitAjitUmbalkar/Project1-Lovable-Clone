@@ -40,6 +40,7 @@ public class WebSecurityConfig
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/success.html", "/success/**", "/cancel.html", "/cancel/**").permitAll() // <--- Added direct file matches
                         .anyRequest().authenticated()
                 )
                 // Delegate Spring Security auth/access errors to your GlobalExceptionHandler
